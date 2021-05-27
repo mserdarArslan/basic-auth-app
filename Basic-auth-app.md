@@ -335,3 +335,80 @@ register.blade.php
 
     $admin->password = Hash::make($request->password);
     ```
+
+* Registration process is created completely.
+
+## 7. Create the login page functions
+
+* First let's create the password check route for the login page. Edit the web.php file for this:
+
+    ```php
+    Route::post('/auth/check', [MainController::class, 'check'])->name('auth.check');
+    ```
+
+* Edit the login.blade.php file to add the login form action:
+
+    ```html
+    <form action="{{ route('auth.check') }}" method="post">
+        @csrf
+    ```
+
+* Add the check function in the MainController.php file:
+
+    ```php
+    function check(Request $request)
+    {
+        // Validate the form data
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:5|max:12'
+        ]);
+
+        // Check user credentials by querying the database
+        $userinfo = Admin::where('email', '=', $request->email)->first();
+
+        // If the user is not found return an error message
+        if (!$userinfo) {
+            return back()->with('fail', 'Not a valid e-mail address.');
+        } else {
+            // Check if the password is correct
+            if (Hash::check($request->password, $userinfo->password)) {
+                // If the password is correct save the logged in
+                // user id in the session 
+                // and redirect user to the dashboard
+                $request->session()->put('LoggedUser', $userinfo->id);
+                return redirect('admin/dashboard');
+            } else {
+                // If the password is not correct return an error message
+                return back()->with('fail', 'Incorrect password.');
+            }
+        }
+    }
+    ```
+
+* Edit the login.blade.php file to include action, to display validation errors, and to keep old values
+
+    ```html
+    <form action="{{ route('auth.check') }}" method="post">
+        @if(Session::get('fail'))
+        <div class="alert alert-danger">
+            {{ Session::get('fail') }}
+        </div>
+        @endif
+        @csrf
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="text" class="form-control" name="email" placeholder="Enter e-mail address"
+                value="{{ old('email') }}">
+            <span class="text-danger">@error('email') {{ $message }} @enderror</span>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter password">
+            <span class="text-danger">@error('password') {{ $message }} @enderror</span>
+        </div>
+        <button type="submit" class="btn btn-block btn-primary">Sign In</button>
+        <br>
+        <a href="{{ route('auth.register') }}">I don't have an account, create an account.</a>
+    </form>
+    ```

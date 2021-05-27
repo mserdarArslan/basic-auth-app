@@ -19,7 +19,8 @@
             <div class="col-md-4 offset-md-4">
                 <h4>Login</h4>
                 <hr>
-                <form action="" method="post">
+                <form action="{{ route('auth.check') }}" method="post">
+                    @csrf
                     <div class="form-group">
                         <label for="email">E-mail</label>
                         <input type="text" class="form-control" name="email" placeholder="Enter e-mail address">
