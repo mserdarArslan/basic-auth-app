@@ -280,3 +280,49 @@ register.blade.php
         'password' => 'required|min:5|max:12'
     ]);
     ```
+
+## 6. Edit the the MainController.php to save the user data in the admins table
+
+* Add the Admin model to the MainController.php file:
+
+    ```php
+    use app\Models\Admin;
+    ```
+
+* Edit the save function in the MainController.php file to save the form values to the database:
+
+    ```php
+    // Insert the data to the database
+    $admin = new Admin();
+    $admin->name = $request->name;
+    $admin->email = $request->email;
+    $admin->password = $request->password;
+    $save = $admin->save();
+    ```
+
+* To check if the data is saved successfully edit the MainController.php as follows:
+
+    ```php
+    if ($save) {
+        return back()->with('success', 'User created successfully');
+    } else {
+        return back()->with('fail', 'Something wrong, try again.');
+    }
+    ```
+
+* To display these return messages on the registration page edit the register.blade.php file as follows:
+
+    ```html
+    <form action="{{ route('auth.save') }}" method="post">
+        @if (Session::get('success'))
+        <div class="alert alert-success">
+            {{ Session::get('success') }}
+        </div>
+        @endif
+        @if (Session::get('fail'))
+        <div class="alert alert-danger">
+            {{ Session::get('fail') }}
+        </div>
+        @endif
+    ```
+
