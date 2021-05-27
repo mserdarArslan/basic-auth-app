@@ -326,3 +326,12 @@ register.blade.php
         @endif
     ```
 
+* The password data is saved to the table unencrypted. To save the encrypted password instead we can use the ```Hash``` class. Edit the MainController.php file to make this change:
+
+    ```php
+    use Illuminate\Support\Facades\Hash;
+
+    ...
+
+    $admin->password = Hash::make($request->password);
+    ```

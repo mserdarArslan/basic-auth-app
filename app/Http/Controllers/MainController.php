@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use app\Models\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class MainController extends Controller
 {
@@ -30,7 +31,7 @@ class MainController extends Controller
         $admin = new Admin();
         $admin->name = $request->name;
         $admin->email = $request->email;
-        $admin->password = $request->password;
+        $admin->password = Hash::make($request->password);
         $save = $admin->save();
 
         if ($save) {
