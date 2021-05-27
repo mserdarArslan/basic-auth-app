@@ -412,3 +412,70 @@ register.blade.php
         <a href="{{ route('auth.register') }}">I don't have an account, create an account.</a>
     </form>
     ```
+
+## 8. Create the dashboard page
+
+* Edit the web.php file to create the dashboard route
+
+    ```php
+    Route::get('/admin/dashboard', [MainController::class, 'dashboard'])->name('auth.dashboard');
+    ```
+
+* Now create the ```dashboard``` method in the MainController.php file
+
+    ```php
+    function dashboard()
+    {
+        // Get the user data from the database to pass to the 
+        // dashboard page
+        $data = ['LoggedUserInfo' => Admin::where('id', '=', session('LoggedUser'))->first()];
+        return view('admin.dashboard', $data);
+    }
+
+    ```
+
+* Create the dashboard view file dashboad.blade.php in resources\views\admin folder
+
+    ```html
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-3">
+                    <h4>Dashboard</h4>
+                    <hr>
+                    <table class="table table-hover">
+                        <thead>
+                            <th>Name</th>
+                            <th>E-mail</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ $LoggedUserInfo['name'] }}</td>
+                                <td>{{ $LoggedUserInfo['email'] }}</td>
+                                <td><a href="{{ route('auth.logout') }}">Logout</a></td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    </html>
+    ```

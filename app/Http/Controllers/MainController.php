@@ -69,4 +69,12 @@ class MainController extends Controller
             }
         }
     }
+
+    function dashboard()
+    {
+        // Get the user data from the database to pass to the 
+        // dashboard page
+        $data = ['LoggedUserInfo' => Admin::where('id', '=', session('LoggedUser'))->first()];
+        return view('admin.dashboard', $data);
+    }
 }
