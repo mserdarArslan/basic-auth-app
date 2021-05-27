@@ -548,3 +548,11 @@ The dashboard page can be seen without loging in if the dashboard url is entered
     }
     ```
 
+* In order to prevent the user go back to the dashboard page after logout edit the AuthCehck.php to pass some parameters to the page header.
+
+    ```php
+    return $next($request)->header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate')
+        ->header('Pragma', 'no-cache')
+        ->header('Expires', 'Sat 01 Jan 1900 00:00:00 GMT');
+    ```
+
