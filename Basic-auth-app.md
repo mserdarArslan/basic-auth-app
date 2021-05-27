@@ -182,3 +182,62 @@ register.blade.php
     ```html
     <a href="{{ route('auth.login') }}">I already have an account, Sign In.</a>
     ```
+
+## 4. Create the form actions on the login and register pages
+
+* Create the save route:
+
+    web.php:
+
+    ```php
+    Route::post('/auth/save', [MainController::class, 'save'])->name('auth.save');
+    ```
+
+* Edit the register.blade.php file to add the action property to the form. Also add the '@csrf' directive to prevent cross-site request forgery:
+
+    ```html
+    <form action="{{ route('auth.save') }}" method="post">
+    @csrf
+    ```
+
+* Add save function to MainController.php file:
+
+    ```php
+    function save(Request $request)
+    {
+        // Validate the form data
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:5|max:12'
+        ]);
+    }
+    ```
+
+* In order to maintain the last input value in the form fields we can use the ```old``` helper function in the form field values. We can also use the ```error``` helper function within a ``` span``` tag so that in case an invalid value is entered in the form field we can provide feedback to the user about the error. Edit the register.blade.php file as follows:
+
+    ```html
+    <form action="{{ route('auth.save') }}" method="post">
+        @csrf
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter e-mail address"
+                value="{{ old('name') }}">
+            <span class="text-danger">@error('name') {{ $message }} @enderror</span>
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="text" class="form-control" name="email" placeholder="Enter e-mail address"
+                value="{{ old('email') }}">
+            <span class="text-danger">@error('email') {{ $message }} @enderror</span>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Enter password">
+            <span class="text-danger">@error('password') {{ $message }} @enderror</span>
+        </div>
+        <button type="submit" class="btn btn-block btn-primary">Sign Up</button>
+        <br>
+        <a href="{{ route('auth.login') }}">I already have an account, Sign In.</a>
+    </form>
+    ```

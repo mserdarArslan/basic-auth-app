@@ -15,4 +15,14 @@ class MainController extends Controller
     {
         return view('auth.register');
     }
+
+    function save(Request $request)
+    {
+        // Validate the form data
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:5|max:12'
+        ]);
+    }
 }

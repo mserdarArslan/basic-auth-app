@@ -18,18 +18,24 @@
             <div class="col-md-4 offset-md-4">
                 <h4>Register</h4>
                 <hr>
-                <form action="" method="post">
+                <form action="{{ route('auth.save') }}" method="post">
+                    @csrf
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" placeholder="Enter e-mail address">
+                        <input type="text" class="form-control" name="name" placeholder="Enter e-mail address"
+                            value="{{ old('name') }}">
+                        <span class="text-danger">@error('name') {{ $message }} @enderror</span>
                     </div>
                     <div class="form-group">
                         <label for="email">E-mail</label>
-                        <input type="text" class="form-control" name="email" placeholder="Enter e-mail address">
+                        <input type="text" class="form-control" name="email" placeholder="Enter e-mail address"
+                            value="{{ old('email') }}">
+                        <span class="text-danger">@error('email') {{ $message }} @enderror</span>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" class="form-control" name="password" placeholder="Enter password">
+                        <span class="text-danger">@error('password') {{ $message }} @enderror</span>
                     </div>
                     <button type="submit" class="btn btn-block btn-primary">Sign Up</button>
                     <br>
