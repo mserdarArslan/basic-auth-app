@@ -479,3 +479,24 @@ register.blade.php
 
     </html>
     ```
+
+* Create the logout function in the MainController.php file:
+
+    ```php
+    function logout()
+    {
+        // If the LoggedUser id is in the session info
+        // remove it from session and redirect to the login page.
+        if (session()->has('LoggedUser')) {
+            session()->pull('LoggedUser');
+            return redirect('auth/login');
+        }
+    }
+    ```
+
+* Create the logout route in the web.php file:
+
+    ```php
+    Route::get('/auth/logout', [MainController::class, 'logout'])->name('auth.logout');    
+    ```
+

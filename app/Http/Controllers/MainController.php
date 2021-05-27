@@ -77,4 +77,14 @@ class MainController extends Controller
         $data = ['LoggedUserInfo' => Admin::where('id', '=', session('LoggedUser'))->first()];
         return view('admin.dashboard', $data);
     }
+
+    function logout()
+    {
+        // If the LoggedUser id is in the session info
+        // remove it from session and redirect to the login page.
+        if (session()->has('LoggedUser')) {
+            session()->pull('LoggedUser');
+            return redirect('auth/login');
+        }
+    }
 }
