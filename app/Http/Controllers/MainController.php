@@ -21,7 +21,7 @@ class MainController extends Controller
         // Validate the form data
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:admins',
             'password' => 'required|min:5|max:12'
         ]);
     }

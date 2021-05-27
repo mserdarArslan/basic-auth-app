@@ -183,7 +183,7 @@ register.blade.php
     <a href="{{ route('auth.login') }}">I already have an account, Sign In.</a>
     ```
 
-## 4. Create the form actions on the login and register pages
+## 4. Create the form actions on the registeration page
 
 * Create the save route:
 
@@ -240,4 +240,43 @@ register.blade.php
         <br>
         <a href="{{ route('auth.login') }}">I already have an account, Sign In.</a>
     </form>
+    ```
+
+## 5. Create the Admin model and migrations
+
+* Create the Admin model with migrations
+
+    ```bash
+    php artisan make:model Admin -m
+    ```
+
+* Edit the migrations file to add some columns to the admins table:
+
+    ```php
+    public function up()
+    {
+        Schema::create('admins', function (Blueprint $table) {
+            $table->id();
+            $table->text('name');
+            $table->text('email');
+            $table->text('password');
+            $table->timestamps();
+        });
+    }
+    ```
+
+* Create the admins table by running the migrations
+
+    ```bash
+    php artisan migrate
+    ```
+
+* Edit the validation rule in the MainController.php file to check if the entered e-mail in the form is a unique e-mail in the admins table:
+
+    ```php
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:admins',
+        'password' => 'required|min:5|max:12'
+    ]);
     ```
