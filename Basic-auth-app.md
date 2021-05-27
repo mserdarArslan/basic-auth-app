@@ -500,3 +500,51 @@ register.blade.php
     Route::get('/auth/logout', [MainController::class, 'logout'])->name('auth.logout');    
     ```
 
+## 9. Create middleware to protect the dashboard page
+
+The dashboard page can be seen without loging in if the dashboard url is entered in the address bar directly. We can create a middleware route to prevent direct access to the dashboard.
+
+* Create an authorization check middleware
+
+    ```bash
+    php artisan make:middleware AuthCheck
+    ```
+    
+    A middlleware file AuthCheck.php is created in app\Http\Middleware folder
+
+* We have to register this middleware in the Kernel.php file under app\Http folder. Edit the Kernel.php file and add the following line inside ```$routeMiddleware``` array:
+
+    ```php
+    'AuthCheck' => \App\Http\Middleware\AuthCheck::class,
+    ```
+
+* We have to create a middleware route in the web.php file and put the routes that we want to keep safe inside this middleware route. Change the web.php file as follows:
+
+    ```php
+    Route::group(['middleware' => ['AuthCheck']], function () {
+        Route::get('/auth/login', [MainController::class, 'login'])->name('auth.login');
+        Route::get('/auth/register', [MainController::class, 'register'])->name('auth.register');
+
+        Route::get('/admin/dashboard', [MainController::class, 'dashboard'])->name('auth.dashboard');
+    });
+    ```
+
+* Then we have to edit the middleware file AuthCheck.php file as follows:
+
+    ```php
+    public function handle(Request $request, Closure $next)
+    {
+        // If the use is not logged in and tries to access routes other than 'register' or 'login' 
+        // then redirect user to login page with an error message.
+        if (!session()->has('LoggedUser') && ($request->path() != 'auth/login' && $request->path() != 'auth/register')) {
+            return redirect('auth/login')->with('fail', 'You must be logged in.');
+        }
+        // If the user is already logged in and tries to access the login or register pages 
+        // then redirect the user back.
+        if (session()->has('LoggedUser') && ($request->path() == 'auth/login' || $request->path() == 'auth/register')) {
+            return back();
+        }
+        return $next($request);
+    }
+    ```
+
